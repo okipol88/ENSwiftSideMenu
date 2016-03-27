@@ -1,0 +1,32 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "BCDB49ED628DA8AA71FA05685DFF5C163964F4D2",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "90c72ef5-1fdf-4a43-8847-ad0fdc5943b3++8674" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "90c72ef5-1fdf-4a43-8847-ad0fdc5943b3++8674" : 0,
+    "BCDB49ED628DA8AA71FA05685DFF5C163964F4D2" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "8CC35BCE-FA9E-4BE1-AA10-FF35FA2BB464",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "90c72ef5-1fdf-4a43-8847-ad0fdc5943b3++8674" : "..",
+    "BCDB49ED628DA8AA71FA05685DFF5C163964F4D2" : "ENSwiftSideMenu\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "ENSwiftSideMenu",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Framework\/ENSwiftSideMenu\/ENSwiftSideMenu.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/itgen1.cloudapp.net:8443\/svn\/Hospitals",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "90c72ef5-1fdf-4a43-8847-ad0fdc5943b3++8674"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/okipol88\/ENSwiftSideMenu.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "BCDB49ED628DA8AA71FA05685DFF5C163964F4D2"
+    }
+  ]
+}

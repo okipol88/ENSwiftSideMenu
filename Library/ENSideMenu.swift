@@ -132,7 +132,7 @@ public class ENSideMenu : NSObject, UIGestureRecognizerDelegate {
         }
     }
     private var menuPosition:ENSideMenuPosition = .Left
-    private var blurStyle: UIBlurEffectStyle = .Light
+    private var blurStyle: UIBlurEffectStyle? = .Light
     ///  A Boolean value indicating whether the bouncing effect is enabled. The default value is TRUE.
     public var bouncingEnabled :Bool = true
     /// The duration of the slide animation. Used only when `bouncingEnabled` is FALSE.
@@ -151,6 +151,7 @@ public class ENSideMenu : NSObject, UIGestureRecognizerDelegate {
     public var allowRightSwipe : Bool = true
     public var allowPanGesture : Bool = true
     private var panRecognizer : UIPanGestureRecognizer?
+    public var topLayoutGuide: UILayoutSupport? = nil
     
     /**
     Initializes an instance of a `ENSideMenu` object.
@@ -160,7 +161,7 @@ public class ENSideMenu : NSObject, UIGestureRecognizerDelegate {
     
     :returns: An initialized `ENSideMenu` object, added to the specified view.
     */
-    public init(sourceView: UIView, menuPosition: ENSideMenuPosition, blurStyle: UIBlurEffectStyle = .Light) {
+    public init(sourceView: UIView, menuPosition: ENSideMenuPosition, blurStyle: UIBlurEffectStyle? = nil) {
         super.init()
         self.sourceView = sourceView
         self.menuPosition = menuPosition
@@ -170,17 +171,17 @@ public class ENSideMenu : NSObject, UIGestureRecognizerDelegate {
         animator = UIDynamicAnimator(referenceView:sourceView)
         animator.delegate = self
         
-        self.panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(ENSideMenu.handlePan(_:)))
+        self.panRecognizer = UIPanGestureRecognizer(target: self, action: "handlePan:")
         panRecognizer!.delegate = self
         sourceView.addGestureRecognizer(panRecognizer!)
         
         // Add right swipe gesture recognizer
-        let rightSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(ENSideMenu.handleGesture(_:)))
+        let rightSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "handleGesture:")
         rightSwipeGestureRecognizer.delegate = self
         rightSwipeGestureRecognizer.direction =  UISwipeGestureRecognizerDirection.Right
         
         // Add left swipe gesture recognizer
-        let leftSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(ENSideMenu.handleGesture(_:)))
+        let leftSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "handleGesture:")
         leftSwipeGestureRecognizer.delegate = self
         leftSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirection.Left
         
@@ -203,7 +204,7 @@ public class ENSideMenu : NSObject, UIGestureRecognizerDelegate {
     
     :returns: An initialized `ENSideMenu` object, added to the specified view, containing the specified menu view controller.
     */
-    public convenience init(sourceView: UIView, menuViewController: UIViewController, menuPosition: ENSideMenuPosition, blurStyle: UIBlurEffectStyle = .Light) {
+    public convenience init(sourceView: UIView, menuViewController: UIViewController, menuPosition: ENSideMenuPosition, blurStyle: UIBlurEffectStyle? = nil) {
         self.init(sourceView: sourceView, menuPosition: menuPosition, blurStyle: blurStyle)
         self.menuViewController = menuViewController
         self.menuViewController.view.frame = sideMenuContainerView.bounds
@@ -264,16 +265,19 @@ public class ENSideMenu : NSObject, UIGestureRecognizerDelegate {
         
         sourceView.addSubview(sideMenuContainerView)
         
-        if (NSClassFromString("UIVisualEffectView") != nil) {
-            // Add blur view
-            let visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: blurStyle)) as UIVisualEffectView
-            visualEffectView.frame = sideMenuContainerView.bounds
-            visualEffectView.autoresizingMask = [.FlexibleHeight, .FlexibleWidth]
-            sideMenuContainerView.addSubview(visualEffectView)
+        if let blurStyle = self.blurStyle {
+            if (NSClassFromString("UIVisualEffectView") != nil) {
+                // Add blur view
+                let visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: blurStyle)) as UIVisualEffectView
+                visualEffectView.frame = sideMenuContainerView.bounds
+                visualEffectView.autoresizingMask = [.FlexibleHeight, .FlexibleWidth]
+                sideMenuContainerView.addSubview(visualEffectView)
+            }
+            else {
+                // TODO: add blur for ios 7
+            }
         }
-        else {
-            // TODO: add blur for ios 7
-        }
+
     }
     
     private func toggleMenu (shouldOpen: Bool) {
@@ -506,6 +510,10 @@ extension ENSideMenu: UIDynamicAnimatorDelegate {
         } else {
             self.delegate?.sideMenuDidClose?()
         }
+    }
+    
+    public func dynamicAnimatorWillResume(animator: UIDynamicAnimator) {
+        print("resume")
     }
 }
 

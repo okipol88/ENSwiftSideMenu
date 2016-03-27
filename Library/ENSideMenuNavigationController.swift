@@ -39,6 +39,11 @@ public class ENSideMenuNavigationController: UINavigationController, ENSideMenuP
         // Dispose of any resources that can be recreated.
     }
     
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        self.sideMenu?.topLayoutGuide = self.viewControllers[0].topLayoutGuide
+    }
+    
     // MARK: - Navigation
     public func setContentViewController(contentViewController: UIViewController) {
         self.sideMenu?.toggleMenu()
