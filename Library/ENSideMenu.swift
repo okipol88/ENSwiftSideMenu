@@ -133,6 +133,7 @@ public class ENSideMenu : NSObject, UIGestureRecognizerDelegate {
     }
     private var menuPosition:ENSideMenuPosition = .Left
     private var blurStyle: UIBlurEffectStyle? = .Light
+    private lazy var dimView: UIView = UIView()
     ///  A Boolean value indicating whether the bouncing effect is enabled. The default value is TRUE.
     public var bouncingEnabled :Bool = true
     /// The duration of the slide animation. Used only when `bouncingEnabled` is FALSE.
@@ -153,6 +154,15 @@ public class ENSideMenu : NSObject, UIGestureRecognizerDelegate {
     private var panRecognizer : UIPanGestureRecognizer?
     public var topLayoutGuide: UILayoutSupport? = nil
     
+    internal var canDim: Bool {
+        get {
+            return self.dim && !self.bouncingEnabled
+        }
+    }
+    public var maxDim: CGFloat = 0.4
+    // Dimm only supported when `bouncingEnabled` is FALSE.
+    public var dim: Bool = true
+    
     /**
     Initializes an instance of a `ENSideMenu` object.
     
@@ -166,6 +176,8 @@ public class ENSideMenu : NSObject, UIGestureRecognizerDelegate {
         self.sourceView = sourceView
         self.menuPosition = menuPosition
         self.blurStyle = blurStyle
+        
+        self.setupDimView()
         self.setupMenuView()
     
         animator = UIDynamicAnimator(referenceView:sourceView)
@@ -193,7 +205,6 @@ public class ENSideMenu : NSObject, UIGestureRecognizerDelegate {
             sideMenuContainerView.addGestureRecognizer(rightSwipeGestureRecognizer)
             sourceView.addGestureRecognizer(leftSwipeGestureRecognizer)
         }
-        
     }
     /**
     Initializes an instance of a `ENSideMenu` object.
@@ -248,6 +259,14 @@ public class ENSideMenu : NSObject, UIGestureRecognizerDelegate {
             return (width, height)
         }
         
+    }
+    
+    private func setupDimView() {
+        dimView.frame = sourceView.bounds
+        dimView.backgroundColor = UIColor.blackColor()
+        dimView.alpha = 0.0
+        dimView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+        sourceView.addSubview(self.dimView)
     }
     
     private func setupMenuView() {
@@ -330,6 +349,10 @@ public class ENSideMenu : NSObject, UIGestureRecognizerDelegate {
             menuViewBehavior.elasticity = 0.25
             animator.addBehavior(menuViewBehavior)
             
+            if (self.canDim) {
+                self.dimView.alpha = shouldOpen ? self.maxDim : 0.0
+            }
+            
         }
         else {
             var destFrame :CGRect
@@ -347,6 +370,9 @@ public class ENSideMenu : NSObject, UIGestureRecognizerDelegate {
                 animationDuration,
                 animations: { () -> Void in
                     self.sideMenuContainerView.frame = destFrame
+                    if (self.canDim) {
+                        self.dimView.alpha = shouldOpen ? self.maxDim : 0.0
+                    }
                 },
                 completion: { (Bool) -> Void in
                     if (self.isMenuOpen) {
@@ -452,6 +478,14 @@ public class ENSideMenu : NSObject, UIGestureRecognizerDelegate {
             
             sideMenuContainerView.center.x = sideMenuContainerView.center.x + translation
             recognizer.setTranslation(CGPointZero, inView: sourceView)
+            
+            let halfVisibleWidth = self.menuWidth / 2.0
+            let currentVisibleWidth = sideMenuContainerView.center.x + halfVisibleWidth
+            let visiblityProgress = currentVisibleWidth / self.menuWidth
+            
+            if (self.canDim) {
+                self.dimView.alpha = self.maxDim * visiblityProgress
+            }
             
         default:
             
