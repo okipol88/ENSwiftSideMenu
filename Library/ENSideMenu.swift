@@ -163,6 +163,8 @@ public class ENSideMenu : NSObject, UIGestureRecognizerDelegate {
     // Dimm only supported when `bouncingEnabled` is FALSE.
     public var dim: Bool = true
     
+    private var tapGestureRecognizer: UITapGestureRecognizer?
+    
     /**
     Initializes an instance of a `ENSideMenu` object.
     
@@ -267,6 +269,10 @@ public class ENSideMenu : NSObject, UIGestureRecognizerDelegate {
         dimView.alpha = 0.0
         dimView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
         sourceView.addSubview(self.dimView)
+        
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "handleTap:")
+        dimView.addGestureRecognizer(tapGestureRecognizer)
+        self.tapGestureRecognizer = tapGestureRecognizer
     }
     
     private func setupMenuView() {
@@ -504,6 +510,13 @@ public class ENSideMenu : NSObject, UIGestureRecognizerDelegate {
             sideMenuContainerView.layer.shadowPath = UIBezierPath(rect: sideMenuContainerView.bounds).CGPath
 
             needUpdateApperance = false
+        }
+    }
+    
+    @objc private func handleTap(recognizer: UITapGestureRecognizer){
+        let location = recognizer.locationInView(sourceView)
+        if !CGRectContainsPoint(self.sideMenuContainerView.frame, location){
+            toggleMenu(false)
         }
     }
     
